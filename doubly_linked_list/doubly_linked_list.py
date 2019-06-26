@@ -44,25 +44,173 @@ class DoublyLinkedList:
     return self.length
 
   def add_to_head(self, value):
-    pass
+
+    new_head = ListNode(value) # create new head
+
+    if self.head is None: # check to see if head exists
+      self.head = new_head
+      self.tail = new_head
+      self.length += 1
+      return new_head.value
+
+    old_head = self.head # copy current head to old head
+
+    old_head.prev = new_head # set old head previous to ref new head
+    new_head.next = old_head # set new head next to ref old head
+
+    self.head = new_head
+    self.length += 1
+
+    return new_head.value
 
   def remove_from_head(self):
-    pass
+
+    if self.head is None:
+      # self.head = self.head
+
+      # self.head = None
+      # self.tail = None
+
+      # return self.head.value
+      return None
+
+    value = self.head.value
+
+    if self.head.next:
+      self.head = self.head.next
+    else:
+      self.tail = None
+      self.head = None
+
+    self.length -= 1
+
+    return value
 
   def add_to_tail(self, value):
-    pass
+    
+    new_tail = ListNode(value)
+
+    if self.head is None:
+      self.head = new_tail
+      self.tail = new_tail
+    else:
+      old_tail = self.tail
+      old_tail.next = new_tail
+      new_tail.prev = old_tail
+      self.tail = new_tail
+
+    self.length += 1
+    return new_tail.value
 
   def remove_from_tail(self):
-    pass
+
+    if self.tail is None:
+      return None
+    
+    old_tail = self.tail
+    new_tail = None
+
+    if self.tail.prev:
+      new_tail = self.tail.prev
+      old_tail.prev = None
+      new_tail.next = None
+    else:
+      self.head = None
+      self.tail = None
+      self.length -= 1
+      return old_tail.value
+
+    self.tail = new_tail
+    self.length -= 1
+    return old_tail.value
 
   def move_to_front(self, node):
-    pass
+    
+    if self.head is None:
+      self.head = node
+      self.tail = node
+      return node.value
+
+    old_head = self.head
+
+    if node.next and node.prev:
+      node.next.prev = node.prev
+      node.prev.next = node.next
+    elif node.next and node.prev is None:
+      self.head = node
+      return node.value
+    elif node.prev and node.next is None:
+      old_tail = node
+      new_tail = old_tail.prev
+      new_tail.next = None
+      self.tail = new_tail
+
+    old_head.prev = node
+    node.next = old_head
+    node.prev = None
+    self.head = node
+
+    return node.value
 
   def move_to_end(self, node):
-    pass
+    
+    if self.tail is None:
+      self.tail = node
+      self.head = node
+      return node.value
+
+    if self.tail is node:
+      return node.value
+
+    if self.head is node and self.tail is not node:
+      self.head = node.next
+      node.next = None
+    else:
+      node.prev.next, node.next.prev = node.next.prev, node.prev.next
+
+    old_tail = self.tail
+
+    node.prev = old_tail
+    node.next = None
+    old_tail.next = node
+    self.tail = node
+    
+    return node.value
 
   def delete(self, node):
-    pass
+    
+    if self.head is None:
+      return None
+
+    if self.head is node:
+      self.head = node.next
+
+    if self.tail is node:
+      self.tail = node.prev
+
+    self.length -= 1
+
+    node.delete()
+
+    return node.value
     
   def get_max(self):
-    pass
+
+    if self.head is None:
+      return 0
+
+    current_node = self.head
+    max_number = current_node.value
+
+    while current_node:
+
+      if current_node.next:
+        current_node = current_node.next
+
+        if current_node.value > max_number:
+          max_number = current_node.value
+
+      else:
+        current_node = None
+
+    return max_number
